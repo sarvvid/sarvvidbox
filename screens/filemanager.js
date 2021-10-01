@@ -39,14 +39,20 @@ export default function FileManager({navigation})  {
         (async()=>{
             const g = await AsyncStorage.getItem('gender');
             console.log(g)
-            if (g == 'Male'){
+            if (g == 'male1'){
                 seturi(require('../img/avatar/male1.png'))
             }
-            else if(g=="Female"){
+            else if(g=="female1"){
                 seturi(require("../img/avatar/female1.png"))
             }
-            else{
-                seturi(require("../img/avatar/female1.png"));
+            else if(g=="male2"){
+                seturi(require("../img/avatar/male2.png"));
+            }
+            else if(g=="male3"){
+                seturi(require("../img/avatar/male3.png"));
+            }
+            else if(g=="female3"){
+                seturi(require("../img/avatar/female3.png"));
             }
         })()
        

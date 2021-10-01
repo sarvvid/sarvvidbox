@@ -21,7 +21,8 @@ const screens = {
        screen: Intro,
        navigationOptions: {
         headerShown: false,
-        headerMode: 'none'
+        headerMode: 'none',
+        
     }
        
    },
@@ -41,7 +42,10 @@ const screens = {
        screen: Home,
        navigationOptions: {
            headerShown: false,
-       }
+           headerMode: 'none',
+ 
+       },
+
    },
    Filemanager: {
        screen: FileManager,

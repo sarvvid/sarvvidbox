@@ -8,6 +8,7 @@ import headphonebig from '../img/headphonebig.png';
 import enter from '../img/audioa.png';
 import mail from '../img/mail.png';
 import phone from '../img/phone.png'
+import Toast from 'react-native-toast-message';
 
 export default function ChatIntro({navigation}) {
 
@@ -24,9 +25,15 @@ export default function ChatIntro({navigation}) {
                     <Image source = {headphonebig}/>
                     <SectionText>How can we help you?</SectionText>
                 </Section>
-                <Card onPress = {() => navigation.navigate("Chat")}>
+                <Card onPress = {() => {
+                    Toast.show({
+                        type:"info",
+                        text1:"Disabled!",
+                        text2:"Currently Live Chat is Disabled."
+                    })
+                }}>
                     <View style = {{flexDirection: "row"}}>
-                        <Image source = {headphone}/>
+                        <Image source = {headphone} />
                         <CardText>Contact Live Chat</CardText>
                     </View>
 
@@ -38,7 +45,7 @@ export default function ChatIntro({navigation}) {
                 </Contact>    
                     <Details>
                     <Head>send us an e-mail</Head>
-                    <SubHead>abc@gmail.com</SubHead>
+                    <SubHead>support@sarvvid-ai.com</SubHead>
                     </Details>
                 
                 <Contact>
@@ -51,6 +58,8 @@ export default function ChatIntro({navigation}) {
                     </Details>
             </Container>
             <Footer navigation = {navigation}/>
+<Toast ref={(ref) => Toast.setRef(ref)} />
+
         </View>
     )
 }

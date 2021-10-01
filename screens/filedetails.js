@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from 'react';
 import styled from 'styled-components';
-import { Text, View, Image, TouchableOpacity, FlatList, TextInput, AsyncStorage,NativeModules,StyleSheet } from 'react-native';
+import { Text,Animated, View, Image, TouchableOpacity, FlatList, TextInput, AsyncStorage,NativeModules,StyleSheet } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigationParam } from '@react-navigation/native';
@@ -26,6 +26,8 @@ import axios from 'axios'
 import AnimatedBar from "react-native-animated-bar";
 import futch from './progress';
 import loading12 from '../img/loading1.gif'
+import { ScrollView } from 'react-native-gesture-handler';
+import { add } from 'react-native-reanimated';
 
 
 const images = [
@@ -107,14 +109,20 @@ export default function FileDetails(navigation) {
     })
     const g = await AsyncStorage.getItem('gender');
     console.log(g)
-    if (g == 'Male'){
+    if (g == 'male1'){
         seturi(require('../img/avatar/male1.png'))
     }
-    else if(g=="Female"){
+    else if(g=="female1"){
         seturi(require("../img/avatar/female1.png"))
     }
-    else{
-        seturi(require("../img/avatar/female1.png"));
+    else if(g=="male2"){
+        seturi(require("../img/avatar/male2.png"));
+    }
+    else if(g=="male3"){
+        seturi(require("../img/avatar/male3.png"));
+    }
+    else if(g=="female3"){
+        seturi(require("../img/avatar/female3.png"));
     }
     setloading1(false)
 
@@ -128,6 +136,7 @@ export default function FileDetails(navigation) {
         // alert(result.uri);
         let result = await ImagePicker.openPicker({multiple:true})
         const mypub = await AsyncStorage.getItem('mypub')
+        console.log("dfdfdfdf>>>>>>>>>>>>",mypub)
         let i = 0;
         console.log(result)
         const paths = [];
@@ -150,7 +159,7 @@ export default function FileDetails(navigation) {
                 [mypub],
                 false
             );
-            RNFS.unlink(`${RNFetchBlob.fs.dirs.DownloadDir}/encyted_temp_${i}`)
+            
             data.append("doc[]",{
                 uri: 'file://'+encryptedPath,
                 type: result[i].mime,
@@ -185,6 +194,9 @@ export default function FileDetails(navigation) {
 
      console.log(respo)
      respo = JSON.parse(respo.response)
+     for(let i=0;i<paths.length;i++){
+         RNFS.unlink(`${RNFetchBlob.fs.dirs.DownloadDir}/encypted_temp_${i}`)
+     }
      if(respo.success){
         AsyncStorage.setItem("authtoken",respo.newtoken)
         SweetAlert.showAlertWithOptions({
@@ -237,6 +249,36 @@ export default function FileDetails(navigation) {
 
 
     }
+
+    const dummy =  [
+        {
+            key:"1",
+        },
+        {
+            key:"2",
+        },
+        {
+            key:"3",
+        },
+        {
+            key:"4",
+        },
+        {
+            key:"5",
+        },
+        {
+            key:"6",
+        },
+        {
+            key:"7",
+        },
+        {
+            key:"8",
+        },
+        {
+            key:"9",
+        },
+    ]
     
     const darkTheme = useTheme();
 
@@ -244,14 +286,59 @@ export default function FileDetails(navigation) {
         return darkTheme ? ['#2c8378','#35448f' ] : [  '#78efe1','#3755f9'] ;
     }
 
+    const scY = useState(new Animated.Value(0))[0];
+    const scH = useState(new Animated.Value(150))[0];
+    const [heightA, setHeightA] = useState(130);
+
+    const [currentPosition,setCurrentPosition] = useState(0)
+    const handleScroll = (e) => {
+        let a = e.nativeEvent.contentOffset.y
+        //console.log(e.nativeEvent.contentOffset.y)
+        if(currentPosition-a<0) {
+            console.log('scrolling up')
+            setCurrentPosition(a)
+            Animated.timing(scY, {
+                toValue:-300,
+                duration:300,
+               
+                useNativeDriver: true,
+            }).start();
+            // Animated.timing(scH, {
+            //     toValue:0,
+            //     duration:3000,
+
+            //     useNativeDriver:false
+            // }).start()
+
+
+        } else if (currentPosition-a>0) {
+            console.log('scrolling down')
+            setCurrentPosition(a)
+            Animated.timing(scY, {
+                toValue:0,
+                duration:300,
+                useNativeDriver: true,
+            }).start();
+            Animated.timing(scH, {
+                toValue:150,
+                duration:300,
+                useNativeDriver: false
+            }).start();
+        }
+    }
+
+
+
     const data = filedata
 
     return(
         <View style = {{flex: 1 , backgroundColor: `${ darkTheme ? "#292929" : "#fff"}`}}>
             {/* <Text>{navigation.route.params.title}</Text> */}
             
-            <Container>
-                <LinearView>
+
+
+            <Container >
+                <LinearView style = {[{height:heightA}, {transform:[{scale:1}, {translateY:scY}]}]}>
                     <LinearGradient start = {{x:0, y:0}} end = {{x:1, y:1}} colors={background()}  >
                         <Header>
                             <HeaderText>{ navigation.route.params.title}</HeaderText>
@@ -270,7 +357,7 @@ export default function FileDetails(navigation) {
                     </TouchableOpacity>
             </View> :
             <>
-                <Input>
+                <Input style = {[ {transform:[{scale:1}, {translateY:scY}]}]}>
                     <TextInput style = {{width:"80%"}} placeholder = "Search files" returnKeyLabel = "send"/>
                     <TouchableOpacity>
                         <Image source = {search}/>
@@ -296,17 +383,32 @@ export default function FileDetails(navigation) {
             
             
                 :  <View style = {{paddingHorizontal:20, width: "100%"}}>
-                <AddCard onPress = {() => uploadFile()} style = {{backgroundColor:  navigation.route.params.addcolor}}>
+                <AddCard onPress = {() => uploadFile()}  style = {[{ backgroundColor:  navigation.route.params.addcolor}, {transform:[{scale:1}, {translateY:scY}]}]}>
                     <Image source = { navigation.route.params.add}/>
                     <AddText>{`add new ${ navigation.route.params.title}`}</AddText>
                 </AddCard>
             </View>}
                
-                <View style = {{width: "90%"}}>
+                <Animated.View style = {[{width: "90%"}, {transform:[{translateY:scY}]}]}>
                 <FlatList
-        data = {data}
+                 onScroll = {(e) => handleScroll(e)}
+        data = {filedata}
+        showsVerticalScrollIndicator = {true}
         renderItem = {({item}) => 
         <View style = {{width: "100%", paddingHorizontal: 5}} >
+{/* 
+                    <Card1 dark = {darkTheme}>
+                           <Section1>
+                               <Image source = {add}/>
+                               <View style = {{marginLeft:10}}>
+                                   <Title dark  = {darkTheme}>Title</Title>
+                                   <SectionDetails dark = {darkTheme}>type: png size:500kb</SectionDetails>
+                               </View>
+                           </Section1>
+                           <Section2>
+                               <Image source = {add}/>
+                           </Section2>
+                       </Card1> */}
            <Card1 dark = {darkTheme} onPress={()=>{
                RNFS.mkdir(`/storage/emulated/0/Pictures/SarvvidBox`).then(res=>{
                 console.log(res);
@@ -338,6 +440,7 @@ export default function FileDetails(navigation) {
                   ) 
                   FileViewer.open(`file:///storage/emulated/0/Pictures/SarvvidBox/${item.filename}`,{onDismiss : ()=>{console.log("dismiss");}})
                   RNFS.unlink(`file:///storage/emulated/0/Pictures/SarvvidBox/${item.filename}`)
+                  RNFS.unlink(`${RNFetchBlob.fs.dirs.DownloadDir}/${item.filename}_enc`)
             })
             }}>
                <Section1>
@@ -356,11 +459,13 @@ export default function FileDetails(navigation) {
     
     />
                 
-                </View>
+                </Animated.View>
                 </>
                 }
 
             </Container>
+
+
             <Footer navigation = {navigation.navigation}/>
             <Toast ref={(ref) => Toast.setRef(ref)} />
 
@@ -378,7 +483,7 @@ const Container = styled.View`
    
 `
 
-const LinearView = styled.View`
+const LinearView = styled(Animated.View)`
     width: 100%;
    
     overflow: hidden;
@@ -458,7 +563,7 @@ const Section2 = styled.View`
     
 `
 
-const Input = styled.View`
+const Input = styled(Animated.View)`
 margin-top: 25px;
  width: 90%;
  margin-bottom:10px ;

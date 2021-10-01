@@ -158,7 +158,7 @@ export default function SignUp({navigation}) {
     React.useEffect(()=>{
         
        
-        setTimeout(async() => {
+        (async() => {
             if (Platform.OS === 'ios') {
 				downloadImage();
 			  } else {
@@ -168,7 +168,7 @@ export default function SignUp({navigation}) {
 					{
 					  title: 'Storage Permission Required',
 					  message:
-						'App needs access to your storage to download Photos',
+						'SarvvidBox needs access to your storage to download Photos',
 					}
 				  );
 				  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -187,7 +187,7 @@ export default function SignUp({navigation}) {
 				  console.warn(err);
 				}
 			  }
-        }, 4000);
+        })();
         const userToken = getUniqueId();
         setTimeout(async() => {
             try {
@@ -214,7 +214,7 @@ export default function SignUp({navigation}) {
             if(p == null)
 {
     Alert.alert(
-        'SarvvidBox has Access to your files , Camera and your Intenet Services',
+        'SarvvidBox has Access to your files , Camera and your Internet Services',
         '',
         [
             {
@@ -506,10 +506,10 @@ export default function SignUp({navigation}) {
                     console.log(r_data);
                     if(data === "Male"){
                         set_uri(require("../img/account.png"));
-                        AsyncStorage.setItem("gender", "Male");
+                        AsyncStorage.setItem("gender", "male1");
                     } else {
                         set_uri(require("../img/account.png"));
-                        AsyncStorage.setItem("gender", "Female");
+                        AsyncStorage.setItem("gender", "female1");
                     }
                 }} value={value}  >
                     <Text>Gender</Text>
